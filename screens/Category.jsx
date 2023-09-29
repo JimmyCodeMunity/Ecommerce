@@ -5,7 +5,7 @@ import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Modal, SafeA
 const CategoryScreen = ({ route }) => {
   const [products, setProducts] = useState([]);
   const [productsNotFound, setProductsNotFound] = useState(false);
-  const { categoryName } = route.params;
+  const { categoryName,categoryImage } = route.params;
 
   //for the modal
   const [modalVisible, setModalVisible] = useState(false);
@@ -32,7 +32,7 @@ const CategoryScreen = ({ route }) => {
     // Replace 'YOUR_API_URL' with the actual API endpoint to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://192.168.2.107:3000/productlistcategory/${categoryName}`);
+        const response = await fetch(`https://api-test-self-six.vercel.app/productlistcategory/${categoryName}`);
         const data = await response.json();
         if (data.length > 0) {
           setProducts(data);
@@ -86,7 +86,10 @@ const CategoryScreen = ({ route }) => {
       <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
     }>
       <View style={styles.body}>
+        <View style={{ flexDirection:'row',alignItems: 'center'}}>
+        <Image source={categoryImage} style={{width:30,height:30,marginRight:10,borderRadius:50}}/>
         <Text style={{ color: 'orange', fontSize: 23, fontWeight: 'bold', marginBottom: 10, paddingVertical: 30, }}>{categoryName}</Text>
+        </View>
         <TextInput style={styles.search} placeholder="search for products from " />
         <Text style={{ color: 'orange', fontSize: 18, }}>What are you looking for?</Text>
       </View>

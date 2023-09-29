@@ -26,6 +26,15 @@ import LottieView from "lottie-react-native";
 import axios from "axios";
 import { Snackbar } from "react-native-paper";
 import GeneralSettings from "./SettingScreen";
+import CarouselCard from "../components/Card";
+import Test from "../components/Test";
+import Categories from "../components/Categories";
+
+
+
+
+const height = Dimensions.get('window').height;
+const width = Dimensions.get('window').width;
 
 const LandingScreen = ({ navigation, route }) => {
   const { email, role } = route.params;
@@ -35,8 +44,10 @@ const LandingScreen = ({ navigation, route }) => {
   const [brand, setBrands] = useState([]);
   const [manufacturer, setManufacturer] = useState([]);
   const [ip, setIp] = useState("192.168.8.153");
+  const [trending, setTrending] = useState([1, 2, 3]);
 
   const [animationLoaded, setAnimationLoaded] = useState(false);
+
 
   useEffect(() => {
     fetchData();
@@ -46,10 +57,10 @@ const LandingScreen = ({ navigation, route }) => {
     setLoading(true);
 
     try {
-      const response = await axios.get("http://192.168.2.107:3000/productlist");
+      const response = await axios.get("https://api-test-self-six.vercel.app/productlist");
       setProducts(response.data);
       setLoading(false);
-      
+
     } catch (error) {
       console.log(error);
     }
@@ -61,10 +72,10 @@ const LandingScreen = ({ navigation, route }) => {
 
   const fetchBrandData = async () => {
     try {
-      const response = await axios.get(`http://192.168.2.107:3000/fetchbrands`);
+      const response = await axios.get(`https://api-test-self-six.vercel.app/fetchbrands`);
       setBrands(response.data);
       setLoading(false);
-      
+
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -78,10 +89,10 @@ const LandingScreen = ({ navigation, route }) => {
 
   const fetchManufacturer = async () => {
     try {
-      const response = await axios.get(`http://192.168.2.107:3000/manufdata`);
+      const response = await axios.get(`https://api-test-self-six.vercel.app/manufdata`);
       setManufacturer(response.data);
       setLoading(false);
-      
+
     } catch (error) {
       console.log(error);
       setLoading(false);
@@ -103,36 +114,66 @@ const LandingScreen = ({ navigation, route }) => {
   };
 
   const categories = [
-    
+
     {
       id: 2,
-      title: "Furniture",
+      title: "Computers and laptops",
       color: "#FF6347",
       image: require("../assets/chair.png"),
       icon: "log-in",
     },
     {
       id: 3,
-      title: "Jewellery",
+      title: "Accessories",
       color: "#4169E1",
       image: require("../assets/jewel.png"),
       icon: "search",
     },
     {
       id: 4,
-      title: "Electronics",
+      title: "Cloths",
       color: "#32CD32",
       image: require("../assets/elec.png"),
     },
     {
       id: 5,
-      title: "Cloths",
+      title: "Shoes",
+      color: "#FF8C00",
+      image: require("../assets/cloth.png"),
+    },
+    {
+      id: 6,
+      title: "Gifts",
+      color: "#FF8C00",
+      image: require("../assets/cloth.png"),
+    },
+    {
+      id: 7,
+      title: "Pet Care",
+      color: "#FF8C00",
+      image: require("../assets/cloth.png"),
+    },
+    {
+      id: 8,
+      title: "Mobile and Tablets",
+      color: "#FF8C00",
+      image: require("../assets/cloth.png"),
+    },
+    {
+      id: 9,
+      title: "Music and Gaming",
+      color: "#FF8C00",
+      image: require("../assets/cloth.png"),
+    },
+    {
+      id: 10,
+      title: "Others",
       color: "#FF8C00",
       image: require("../assets/cloth.png"),
     },
   ];
 
-  
+
 
   //logout function start
   const logout = async () => {
@@ -176,69 +217,11 @@ const LandingScreen = ({ navigation, route }) => {
     }, 2000); // Delay in milliseconds (adjust as needed)
   }, []);
 
-  const renderProductCards = () => {
-    return products.map((product) => (
-      <ScrollView
-        style={styles.deals}
-        horizontal={true}
-        showsHorizontalScrollIndicator={false}
-      >
-        <TouchableOpacity
-          onPress={() =>
-            navigation.navigate("View", {
-              itemName: product.productname,
-              itemImage: product.image,
-              itemPrice: product.price,
-              itemManufacturer: product.sellername,
 
-              email,
-            })
-          }
-          key={product._id}
-        >
-          <View style={styles.card1} key={product.id}>
-            <TouchableOpacity
-              onPress={() => setBottomSheetVisible(true)}
-              style={{ top: 10, left: 10, position: "absolute", zIndex: 1 }}
-            >
-              <FeatherIcon name="heart" size={35} color="orange" />
-            </TouchableOpacity>
-
-            {loading ? (
-              // Display the LottieView while loading is true
-              <View style={styles.imageLoader}>
-                <ActivityIndicator
-                  size="large"
-                  color="orange"
-                  style={{
-                    width: 10,
-                    height: 10,
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                />
-              </View>
-            ) : (
-              // Display the product details when loading is false
-              <Image
-                source={{ uri: product.image }}
-                style={styles.image1}
-                resizeMode="cover"
-              />
-            )}
-            <Text style={{ fontSize: 13, fontWeight: "bold" }}>
-              Kshs.{product.price}
-            </Text>
-            <Text>{product.productname}</Text>
-            <Text>Manufacturer:{product.sellername}</Text>
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
-    ));
-  };
 
   return (
     <SafeAreaView
+      className="bg-white align-center flex-1"
       style={styles.container}
       refreshControl={
         <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
@@ -253,7 +236,7 @@ const LandingScreen = ({ navigation, route }) => {
           </View>
 
           <View style={{ flexDirection: "row" }}>
-            
+
 
             <TouchableOpacity
               style={{ marginRight: 10 }}
@@ -264,7 +247,10 @@ const LandingScreen = ({ navigation, route }) => {
           </View>
         </View>
 
-        <View style={styles.search}>
+        <View style={[styles.search, { paddingHorizontal: 15 }]}>
+          <View>
+            <Image source={require('../assets/logo.jpg')} style={{ height: 30, width: 30 }} className="rounded-full" />
+          </View>
           <View style={styles.searchcont}>
             <TextInput
               style={styles.input}
@@ -289,10 +275,11 @@ const LandingScreen = ({ navigation, route }) => {
         }
       >
         <View style={{ justifyContent: "center", alignItems: "center" }}>
-          <Image
-            style={styles.carditem}
-            source={require("../assets/opas.png")}
-          />
+
+
+          <CarouselCard data={trending} />
+
+
           <View>
             <Text
               style={{
@@ -330,16 +317,23 @@ const LandingScreen = ({ navigation, route }) => {
           }}
         >
           <View>
-            <Text style={{ fontWeight: "bold", fontSize: 16, marginTop: 10 ,color:'orange'}}>
-            <FeatherIcon name="star" size={25} color="orange" />Featured Manufacturers
+            <Text style={{ fontWeight: "bold", fontSize: 16, marginTop: 10, color: 'orange' }}>
+              <FeatherIcon name="star" size={25} color="orange" />Featured Manufacturers
             </Text>
           </View>
 
           <View>
-            
+
           </View>
         </View>
-        <ScrollView
+
+
+
+
+
+        <View>
+          <ScrollView
+            contentContainerStyle={{ paddingHorizontal: 15 }}
             refreshControl={
               <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
             }
@@ -355,27 +349,33 @@ const LandingScreen = ({ navigation, route }) => {
                       manName: manufacturer.username,
                       manImage: manufacturer.picture,
                       mancat1: manufacturer.category,
-                      
+
 
                       email,
                     })
                   }
                   key={manufacturer._id}
                 >
-                  <View style={styles.card} key={manufacturer.id}>
-                    
+                  <View className="space-y-1 mr-4" key={manufacturer.id}>
 
-                    <Image
+
+                    <Image className="rounded-full"
                       source={{ uri: manufacturer.picture }}
-                      style={styles.image}
+                      style={{
+                        height: 70, width: 70, borderWidth: 3, borderColor: 'orange', borderStyle: 'dotted'
+                      }}
                       resizeMode="cover"
                     />
-                    <Text>{manufacturer.username}</Text>
+                    <Text className="text-neutral-600 mt-3">
+
+                      {manufacturer.username.length > 8 ? manufacturer.username.slice(0, 8) + '...' : manufacturer.username}
+                    </Text>
                   </View>
                 </TouchableOpacity>
               ))}
             </View>
           </ScrollView>
+        </View>
 
 
 
@@ -403,43 +403,16 @@ const LandingScreen = ({ navigation, route }) => {
           </View>
         </View>
 
-        <ScrollView
-          style={styles.cats}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
-          <View style={styles.cardContainer} horizontal={true}>
-            {categories.map((item) => (
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate("Category", {
-                    categoryName: item.title,
-                    categoryImage: item.image,
-                    email,
-                  })
-                }
-                key={item.id}
-              >
-                <View style={styles.card} key={item.id}>
-                  <Text>{item.title}</Text>
-                  <Image
-                    source={item.image}
-                    style={styles.image}
-                    resizeMode="cover"
-                  />
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </ScrollView>
+        {/**Categories goes here */}
+        <Categories email={email}/>
 
-        <View>
+        <View className="mb-3">
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
             <View>
               <Text style={{ fontWeight: "bold", fontSize: 18, marginTop: 5 }}>
-                Brands
+                Brands you love
               </Text>
             </View>
             <View>
@@ -451,43 +424,65 @@ const LandingScreen = ({ navigation, route }) => {
             </View>
           </View>
 
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-            }
-            style={styles.cats}
-            horizontal={true}
-            showsHorizontalScrollIndicator={false}
-          >
-            <View style={styles.cardContainer} horizontal={true}>
-              {brand.map((brand) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    navigation.navigate("BrandView", {
-                      brandName: brand.brandname,
-                      brandImage: brand.image,
-                      brandcat1: brand.subcategories,
-                      brandcategories: brand.subcategories,
 
-                      email,
-                    })
-                  }
-                  key={brand._id}
-                >
-                  <View style={styles.card} key={brand.id}>
-                    <Text>{brand.brandname}</Text>
 
-                    <Image
-                      source={{ uri: brand.brandimage }}
-                      style={styles.image}
-                      resizeMode="cover"
-                    />
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </ScrollView>
+
+          {/**Brands go here */}
+          <View>
+            <ScrollView
+              
+              style={styles.cats}
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+            >
+              <View style={styles.cardContainer} horizontal={true}>
+                {brand.map((brand) => (
+                  <TouchableOpacity
+                    onPress={() =>
+                      navigation.navigate("BrandView", {
+                        brandName: brand.brandname,
+                        brandImage: brand.image,
+                        brandcat1: brand.subcategories,
+                        brandcategories: brand.subcategories,
+
+                        email,
+                      })
+                    }
+                    key={brand._id}
+                  >
+                    <View className="space-y-1 mr-4" key={brand.id}>
+
+
+                      <Image
+                        className="rounded-2xl"
+                        source={{ uri: brand.brandimage }}
+                        style={{
+                          height: 90,
+                          width: 70,
+                          borderWidth: 0.9,
+                          borderColor: 'black'
+
+                        }}
+                        resizeMode="cover"
+                      />
+                      <Text className="text-center text-neutral-600">
+
+                        {brand.brandname.length > 8 ? brand.brandname.slice(0, 8) + '...' : brand.brandname}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+          </View>
         </View>
+
+
+
+
+
+
+        {/**End of brands */}
         <Modal
           isVisible={isBottomSheetVisible}
           onBackdropPress={() => setBottomSheetVisible(false)}
@@ -536,31 +531,27 @@ const LandingScreen = ({ navigation, route }) => {
           </View>
         </Modal>
 
-        
+
       </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    alignItems: "center",
-  },
+
   top: {
     backgroundColor: "#ffffff",
     height: 120,
     width: "100%",
     borderBottomRightRadius: 20,
     borderBottomLeftRadius: 20,
-    paddingVertical:20,
+
   },
   menu: {
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 15,
-    marginTop:18,
+    marginTop: 18,
   },
   search: {
     alignItems: "center",
@@ -586,8 +577,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "#ffffff",
-    borderWidth: 1,
-    borderColor: "orange",
+
     padding: 5,
     margin: 5,
     minWidth: 80,

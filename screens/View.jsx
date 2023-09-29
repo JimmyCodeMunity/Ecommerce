@@ -32,7 +32,7 @@ function ViewScreen({ route }) {
     };
 
     // Make a POST request to the MongoDB database API
-    axios.post('http://192.168.2.108:3000/cart', data)
+    axios.post('https://api-test-self-six.vercel.app/cart', data)
       .then(response => {
         // Handle the response, e.g., show a success message
         console.log(response.data);

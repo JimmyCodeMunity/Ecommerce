@@ -40,7 +40,7 @@ const RegisterScreen = () => {
 
   const handleRegister = () => {
     axios
-      .post('http://192.168.2.107:3000/register', { name, email, password })
+      .post('https://api-test-self-six.vercel.app/register', { name, email, password })
       .then(response => {
         handleLogin();
         Alert.alert('Success', response.data.message);

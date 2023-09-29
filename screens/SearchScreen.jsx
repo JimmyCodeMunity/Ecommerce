@@ -27,7 +27,7 @@ const SearchResultsScreen = ({ route }) => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.2.107:3000/productlistsearch/${searchQuery}`
+        `https://api-test-self-six.vercel.app/productlistsearch/${searchQuery}`
       );
       setSearchResults(response.data);
       setLoading(false);

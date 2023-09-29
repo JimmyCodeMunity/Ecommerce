@@ -26,7 +26,7 @@ const cardWidth = windowWidth / 2 - 20;
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(`http://192.168.2.116:3000/cartuser/${email}`);
+      const response = await axios.get(`https://api-test-self-six.vercel.app/cartuser/${email}`);
       setProducts(response.data);
       setLoading(false);
     } catch (error) {
@@ -38,7 +38,7 @@ const cardWidth = windowWidth / 2 - 20;
   //remove item from cart
   const removeItem = async (itemId) => {
     try {
-      await axios.delete(`http://192.168.2.116:3000/delcart/${itemId}`);
+      await axios.delete(`https://api-test-self-six.vercel.app/delcart/${itemId}`);
       // Item deleted successfully, update the products state by filtering out the deleted item
       setProducts((prevProducts) =>
         prevProducts.filter((item) => item._id !== itemId)

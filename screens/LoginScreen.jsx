@@ -53,7 +53,7 @@ const LoginScreen = () => {
     
     setLoading(true);
     axios
-      .post("http://192.168.2.107:3000/login", { email, password })
+      .post("https://api-test-self-six.vercel.app/login", { email, password })
       .then((response) => {
         handleSuccess();
         setShowSnackbar(true);

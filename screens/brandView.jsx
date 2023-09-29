@@ -59,7 +59,7 @@ const BrandView = ({ route }) => {
     // Replace 'YOUR_API_URL' with the actual API endpoint to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://192.168.2.107:3000/productlistcategoryandbrand/${brandName}/${selectedSubcategory}`);
+        const response = await fetch(`https://api-test-self-six.vercel.app/productlistcategoryandbrand/${brandName}/${selectedSubcategory}`);
         const data = await response.json();
         if (data.length > 0) {
           setProducts(data);
@@ -83,20 +83,21 @@ const BrandView = ({ route }) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          setSelectedProductDescription([item.sellername,item.productname,item.brand,item.category,item.phone,item.image,]); // Set the selected product's description
+          setSelectedProductDescription([item.sellername,item.productname,item.brand,item.category,item.phone,item.image,item.price]); // Set the selected product's description
           setModalVisible(true); // Show the modal
         }}
       >
-      <View style={styles.productCard}>
+      <View style={styles.productCard} className="bg-gray-100 shadow-lg p-2 flex items-end">
       
       <View>
-        <Image source={{ uri: item.image }} style={styles.productImage} />
+        <Image source={{ uri: item.image }} style={styles.productImage} className="rounded-xl rotate-0" />
         </View>
         <View>
         <Text style={styles.productName}>Productname:{item.productname}</Text>
         <Text style={styles.productPrice}>Price:{item.price}</Text>
         <Text style={styles.productPrice}>Manufacturer:{item.sellername}</Text>
         <Text style={styles.productPrice}>Contact:{item.phone}</Text>
+        
         </View>
         
         {/* Add other product details here */}
@@ -166,22 +167,30 @@ const BrandView = ({ route }) => {
         </View>
       )}
 
-      <Modal
+<Modal
         animationType="slide"
-        transparent={true}
+        transparent={false}
         visible={modalVisible}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Product Description</Text>
-            <Image source={{ uri: selectedProductDescription[5] }} style={styles.productImage} />
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>ProductName:{selectedProductDescription[1]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Brand:{selectedProductDescription[2]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Manufacturer:{selectedProductDescription[0]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Subcategory:{selectedProductDescription[3]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Contact:{selectedProductDescription[4]}</Text>
-            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
+            
+            <View style={styles.modalImageContainer}>
+              <Image source={{ uri: selectedProductDescription[5] }} className="shadow-lg bg-gray-500" style={styles.modalImage} />
+            </View>
+            <View style={styles.modalTextContainer}>
+              <View style={{ flexDirection:'row',justifyContent: 'space-between',paddingVertical:20,}}>
+              <Text numberOfLines={2} style={{ fontSize:24,fontWeight:'bold' }} className="text-3xl text-bold">{selectedProductDescription[1]}</Text>
+              <Text style={{ fontSize:24,fontWeight:'bold' }} className="text-3xl text-bold">${selectedProductDescription[6]}</Text>
+              </View>
+              <Text style={{  }} className="text-slate-500 my-1">Manufacturer: {selectedProductDescription[0]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Subcategory: {selectedProductDescription[3]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Contact: {selectedProductDescription[4]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Brand: {selectedProductDescription[2]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Exchange Rate: </Text>
+            </View>
+            <TouchableOpacity onPress={closeModal} style={{ backgroundColor:'orange' }} className="rounded-xl bg-orange-300">
+              <Text style={styles.closeButtonText} className="p-3 text-lg">View other products</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -227,19 +236,21 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   productCard: {
-    borderWidth: 1,
+
     borderColor: 'gray',
     borderRadius: 10,
-    padding: 10,
+    padding: 12,
     marginBottom: 15,
-    flexDirection:'row',
-    justifyContent:'space-between',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 100,
   },
   productImage: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     resizeMode: 'cover',
-    marginBottom: 5,
+
   },
   productName: {
     fontSize: 16,
@@ -252,17 +263,44 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
+    
+    borderRadius: 0,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
   },
   modalTitle: {
     fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalImageContainer: {
+    width: '100%',
+    aspectRatio: 1, // Maintain aspect ratio of 1:1
+    overflow: 'hidden', // Ensure the image doesn't exceed its container
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%', // Cover the entire container while maintaining aspect ratio
+    resizeMode: 'cover',
+    shadowColor: '#000', // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
+    shadowOpacity: 0.25, // Shadow opacity (0 to 1)
+    shadowRadius: 3.84, // Shadow radius
+    borderBottomRightRadius:20,
+    borderBottomLeftRadius:20,
+    
+  },
+  modalTextContainer: {
+    width: '100%',
+    marginTop: 20,
+    padding:20,
+  },
+  modalText: {
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -272,6 +310,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   closeButtonText: {
     color: 'white',

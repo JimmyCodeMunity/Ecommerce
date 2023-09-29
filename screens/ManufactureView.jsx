@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LottieView from 'lottie-react-native';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet,Modal, SafeAreaView, TextInput,RefreshControl } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Modal, SafeAreaView, TextInput, RefreshControl } from 'react-native';
 
 const ManufacturerView = ({ route }) => {
   const [brandData, setBrandData] = useState(null);
@@ -59,7 +59,7 @@ const ManufacturerView = ({ route }) => {
     // Replace 'YOUR_API_URL' with the actual API endpoint to fetch products
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`http://192.168.2.107:3000/productlistcategoryandseller/${manName}/${selectedSubcategory}`);
+        const response = await fetch(`https://api-test-self-six.vercel.app/productlistcategoryandseller/${manName}/${selectedSubcategory}`);
         const data = await response.json();
         if (data.length > 0) {
           setProducts(data);
@@ -83,23 +83,24 @@ const ManufacturerView = ({ route }) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          setSelectedProductDescription([item.sellername,item.productname,item.brand,item.category,item.phone,item.image,]); // Set the selected product's description
+          setSelectedProductDescription([item.sellername, item.productname, item.brand, item.category, item.phone, item.image, item.price]); // Set the selected product's description
           setModalVisible(true); // Show the modal
         }}
       >
-      <View style={styles.productCard}>
-      
-      <View>
-        <Image source={{ uri: item.image }} style={styles.productImage} />
+        <View style={styles.productCard} className="bg-gray-100 shadow-lg p-2 flex items-end">
+
+          <View>
+            <Image source={{ uri: item.image }} className="rounded-xl rotate-0" style={styles.productImage} />
+          </View>
+
+          <View className="ml-4">
+            <Text style={styles.productName} className="text-xl font-bold">{item.productname}</Text>
+            <Text style={styles.productPrice} className="text-lg font-semibold">Price: ${item.price}</Text>
+
+            {/* Add other product details here */}
+          </View>
         </View>
-        <View style={{ justifyContent:'center',alignItems:'center' }}>
-        <Text style={styles.productName}>Productname:{item.productname}</Text>
-        <Text style={styles.productPrice}>Price:{item.price}</Text>
-        
-        </View>
-        
-        {/* Add other product details here */}
-      </View>
+
       </TouchableOpacity>
     );
   };
@@ -108,23 +109,33 @@ const ManufacturerView = ({ route }) => {
     <SafeAreaView style={styles.container} refreshControl={
       <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
     }>
-    
+
       {brandData && (
         <View style={styles.body} refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
         }>
-          
-          <Text style={{ color: 'orange', fontSize: 23, fontWeight: 'bold', marginBottom: 10, paddingVertical: 30, }}>{brandData.brandname}</Text>
-          
+          <View style={{ paddingVertical: 25, justifyContent: 'space-between', flexDirection: 'row' }}>
+            <View>
+              <Text style={{ color: 'orange', fontSize: 23, fontWeight: 'bold' }}>{brandData.brandname}</Text>
+              <Text className="text-slate-500 text-lg">Exchange Rate:</Text>
+              <Text className="text-slate-500 text-lg">Address:</Text>
+            </View>
+            <View>
+
+              <Text className="text-slate-500 text-lg">Phone Number:</Text>
+              <Text className="text-slate-500 text-lg">Total Products:</Text>
+            </View>
+          </View>
+
           <Text style={{ color: 'orange', fontSize: 18, }}>We are dealers in..</Text>
           <FlatList
-          refreshControl={
-          <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
-        }
+            refreshControl={
+              <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+            }
             data={brandData.category}
             renderItem={({ item }) => (
               <TouchableOpacity
-              key={item._id}
+                key={item._id}
                 onPress={() => setSelectedSubcategory(item)}
                 style={[
                   styles.subcategoryButton,
@@ -143,11 +154,12 @@ const ManufacturerView = ({ route }) => {
 
       {productsNotFound ? (
         <Text style={styles.noProductsText}>No products found for this subcategory.</Text>
-        
+
       ) : (
         <FlatList
           style={{ paddingHorizontal: 30 }}
           data={products}
+          className="scroll-smooth"
           renderItem={renderProductCard}
           keyExtractor={(item) => item.productId}
           refreshControl={
@@ -169,24 +181,34 @@ const ManufacturerView = ({ route }) => {
 
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent={false}
         visible={modalVisible}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Product Description</Text>
-            <Image source={{ uri: selectedProductDescription[5] }} style={styles.productImage} />
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>ProductName:{selectedProductDescription[1]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Brand:{selectedProductDescription[2]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Manufacturer:{selectedProductDescription[0]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Subcategory:{selectedProductDescription[3]}</Text>
-            <Text style={{ fontSize:16,fontWeight:'bold' }}>Contact:{selectedProductDescription[4]}</Text>
-            <TouchableOpacity onPress={closeModal} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Close</Text>
+            
+            <View style={styles.modalImageContainer}>
+              <Image source={{ uri: selectedProductDescription[5] }} className="shadow-lg bg-gray-500" style={styles.modalImage} />
+            </View>
+            <View style={styles.modalTextContainer}>
+              <View style={{ flexDirection:'row',justifyContent: 'space-between',paddingVertical:20,}}>
+              <Text numberOfLines={2} style={{ fontSize:24,fontWeight:'bold' }} className="text-3xl text-bold">{selectedProductDescription[1]}</Text>
+              <Text style={{ fontSize:24,fontWeight:'bold' }} className="text-3xl text-bold">${selectedProductDescription[6]}</Text>
+              </View>
+              <Text style={{  }} className="text-slate-500 my-1">Manufacturer: {selectedProductDescription[0]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Subcategory: {selectedProductDescription[3]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Contact: {selectedProductDescription[4]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Brand: {selectedProductDescription[2]}</Text>
+              <Text style={{  }} className="text-slate-500 my-1">Exchange Rate: </Text>
+            </View>
+            <TouchableOpacity onPress={closeModal} style={{ backgroundColor:'orange' }} className="rounded-xl bg-orange-300">
+              <Text style={styles.closeButtonText} className="p-3 text-lg">View other products</Text>
             </TouchableOpacity>
           </View>
         </View>
       </Modal>
+
+
     </SafeAreaView>
   );
 };
@@ -228,19 +250,21 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   productCard: {
-    borderWidth: 1,
+
     borderColor: 'gray',
     borderRadius: 10,
-    padding: 10,
+    padding: 12,
     marginBottom: 15,
-    flexDirection:'row',
-    justifyContent:'space-between',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 100,
   },
   productImage: {
-    width: 100,
-    height: 100,
+    width: 50,
+    height: 50,
     resizeMode: 'cover',
-    marginBottom: 5,
+
   },
   productName: {
     fontSize: 16,
@@ -253,17 +277,44 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '80%',
+    
+    borderRadius: 0,
+    width: '100%',
+    height: '100%',
     alignItems: 'center',
   },
   modalTitle: {
     fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalImageContainer: {
+    width: '100%',
+    aspectRatio: 1, // Maintain aspect ratio of 1:1
+    overflow: 'hidden', // Ensure the image doesn't exceed its container
+  },
+  modalImage: {
+    width: '100%',
+    height: '100%', // Cover the entire container while maintaining aspect ratio
+    resizeMode: 'cover',
+    shadowColor: '#000', // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
+    shadowOpacity: 0.25, // Shadow opacity (0 to 1)
+    shadowRadius: 3.84, // Shadow radius
+    borderBottomRightRadius:20,
+    borderBottomLeftRadius:20,
+    
+  },
+  modalTextContainer: {
+    width: '100%',
+    marginTop: 20,
+    padding:20,
+  },
+  modalText: {
+    fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 10,
   },
@@ -273,6 +324,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+  },
+  closeButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
   },
   closeButtonText: {
     color: 'white',

@@ -49,7 +49,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const fetchData = async () => {
     try {
       const response = await axios.get(
-        `http://172.20.10.6:3000/userdata/${email}`
+        `https://api-test-self-six.vercel.app/userdata/${email}`
       );
       setUser(response.data);
       console.log(response.data);
